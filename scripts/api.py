@@ -82,10 +82,9 @@ def u2net_api(_:gr.Blocks, app: FastAPI):
 
         print(f"-------------- 1. get image path and name --------------")
         for image in images:
-            filename = os.path.basename(image)
-            file_extension = os.path.splitext(filename)[1]
+            filename = os.path.basename(image)            
             response = requests.get(image)
-            image_name = f"{input_dir}/{prefix}_{filename}.{file_extension}"
+            image_name = f"{input_dir}/{prefix}_{filename}"
             with open(image_name, "wb") as f:
                 f.write(response.content)
         
@@ -109,7 +108,6 @@ def u2net_api(_:gr.Blocks, app: FastAPI):
         print(f"-------------- 4. inference for each image --------------")
         for i, data in enumerate(salobj_dataloader):
             print("inferencing:",img_name_list[i].split(os.sep)[-1])
-
             inputs = data['image']
             inputs = inputs.type(torch.FloatTensor)
 
@@ -130,9 +128,11 @@ def u2net_api(_:gr.Blocks, app: FastAPI):
 
             image = io.imread(img_name_list[i])
             pd = transform.resize(predict_np,image.shape[0:2],order=2)
-            pd = pd/(np.amax(pd)+1e-8)*255
-            pd = pd.astype(np.uint8)  # 이미지 데이터를 8비트 정수로 변환
+            pd = pd/(np.amax(pd)+1e-8)*255            
             pd = pd[:,:,np.newaxis]
+
+            print(image.shape)
+            print(pd.shape)
 
             ## fuse the orignal portrait image and the portraits into one composite image
             ## 1. use gaussian filter to blur the orginal image
@@ -142,16 +142,11 @@ def u2net_api(_:gr.Blocks, app: FastAPI):
              ## 2. fuse these orignal image and the portrait with certain weight: alpha
             alpha = alpha
             im_comp = image*alpha+pd*(1-alpha)
-            im_comp = (im_comp * 255).astype(np.uint8)
-
-            if im_comp.ndim == 2:
-                im_comp = im_comp[:, :, np.newaxis]
-
+        
             
             file_name = f"{prefix}_{i}.png"
             io.imsave(f"{output_dir}/{file_name}",im_comp)
 
-            del d1,d2,d3,d4,d5,d6,d7
 
             print(f"-------------- 5. upload to cos --------------")
             with open(f"{output_dir}/{file_name}", "rb") as f:
@@ -164,6 +159,7 @@ def u2net_api(_:gr.Blocks, app: FastAPI):
                 )
 
                 results.append(f"https://{COS_ENDPOINT}/outputs/u2net/{file_name}")
+            del d1,d2,d3,d4,d5,d6,d7
 
         return {"results": results}
 
