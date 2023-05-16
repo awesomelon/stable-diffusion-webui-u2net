@@ -29,8 +29,8 @@ from scripts.data_loader import ToTensor
 from scripts.data_loader import ToTensorLab
 from scripts.data_loader import SalObjDataset
 
-from model import U2NET # full size version 173.6 MB
-from model import U2NETP # small version u2net 4.7 MB
+from scripts.model import U2NET # full size version 173.6 MB
+from scripts.model import U2NETP # small version u2net 4.7 MB
 
 import argparse
 
@@ -45,6 +45,7 @@ BUCKET = os.environ.get('BUCKET')
 COS_ENDPOINT = os.environ.get('COS_ENDPOINT')
 
 model_name='u2net_portrait'
+model_dir = '/models/u2net_portrait/u2net_portrait.pth'
 
 DEVICE_ID = int(os.getenv('DEVICE_ID')) if os.getenv('DEVICE_ID') else 0
 
