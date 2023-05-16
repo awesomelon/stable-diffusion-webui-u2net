@@ -177,6 +177,6 @@ def u2net_api(_:gr.Blocks, app: FastAPI):
 try:
     import modules.script_callbacks as script_callbacks
 
-    script_callbacks.on_app_started(rembg_api)
+    script_callbacks.on_app_started(u2net_api)
 except:
     pass
