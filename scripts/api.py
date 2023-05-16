@@ -82,7 +82,7 @@ def u2net_api(_:gr.Blocks, app: FastAPI):
 
         print(f"-------------- 1. get image path and name --------------")
         for image in images:
-            filename = os.path.basename(image.path)
+            filename = os.path.basename(image)
             file_extension = os.path.splitext(filename)[1]
             response = requests.get(image)
             image_name = f"{input_dir}/{prefix}_{filename}.{file_extension}"
