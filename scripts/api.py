@@ -154,7 +154,7 @@ def u2net_api(_:gr.Blocks, app: FastAPI):
             for i in range(1,len(bbb)):
                 imidx = imidx + "." + bbb[i]
             
-            file_name = f"{prefix}_{imidx}_composite.png"
+            file_name = f"{prefix}_{imidx}"
             io.imsave(f"{output_dir}/{file_name}",im_comp)
 
             del d1,d2,d3,d4,d5,d6,d7
