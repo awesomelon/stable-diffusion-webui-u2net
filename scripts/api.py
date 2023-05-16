@@ -147,14 +147,8 @@ def u2net_api(_:gr.Blocks, app: FastAPI):
             if im_comp.ndim == 2:
                 im_comp = im_comp[:, :, np.newaxis]
 
-            img_name = image_name.split(os.sep)[-1]
-            aaa = img_name.split(".")
-            bbb = aaa[0:-1]
-            imidx = bbb[0]
-            for i in range(1,len(bbb)):
-                imidx = imidx + "." + bbb[i]
             
-            file_name = f"{prefix}_{imidx}"
+            file_name = f"{prefix}_{i}.png"
             io.imsave(f"{output_dir}/{file_name}",im_comp)
 
             del d1,d2,d3,d4,d5,d6,d7
